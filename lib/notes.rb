@@ -34,7 +34,7 @@ class AnnotationExtractor
   class << self
     attr_reader :tags
     def tags=(tags)
-      @tags = tags.to_a
+      @tags = tags.is_a?(Array) ? tags : [tags]
     end
   end
 
