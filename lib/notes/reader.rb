@@ -25,22 +25,34 @@ module Notes
       out = `#{cmd}`.strip
       raise out if $?.exitstatus > 0
 
-      @list = out.split("\n").map do |l|
-        # FIXME Ruby versions problem. Not always the same output. Try:
-        # rvm ruby -e '`rak TODO`.split("\n").each { |l| puts l }'
+      # Because of different rak versions,
+      # rak system call outputs are not similar.
+      if `rak --version` =~ /rak (\d\.\d)/
+        rak_version = $1
+      else
+        raise "Can't get rak version"
+      end
+
+      # 0.9 is the current rak gem version.
+      # 1.1 is the rak version from the github repo.
+      if rak_version == "1.1"
+        regex = /^(.*):(\d*):.*(#{tags * "|"})\s*(.*)$/
+      else
         regex = /^([^\s]+)\s+(\d+)\|.*(#{tags * "|"})\s*(.*)$/
-          #TODO regex = /^(.*):(\d*):.*(#{tags * "|"})\s*(.*)$/ if ???
-          if l =~ regex
-            Annotation.new({
-              :file => $1,
-              :line => $2.to_i,
-              :tag => $3,
-              :text => $4.strip
-            })
-          else
-            # Just for a debug purpose
-            raise "notes: does not match regexp => \"#{l}\""
-          end
+      end
+
+      @list = out.split("\n").map do |l|
+        if l =~ regex
+          Annotation.new({
+            :file => $1,
+            :line => $2.to_i,
+            :tag => $3,
+            :text => $4.strip
+          })
+        else
+          # Just for a debug purpose
+          raise "notes: does not match regexp => \"#{l}\""
+        end
       end
     end
 
