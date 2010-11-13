@@ -13,8 +13,6 @@ It will look for tags recursively in every given files (or in current directory 
 
 == Installation
 
-= SOON!
-
 Notes is available on Rubygems.org[http://rubygems.org/gems/notes] and can be installed with:
 
   $ gem install notes
