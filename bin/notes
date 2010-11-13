@@ -39,10 +39,10 @@ ARGV.options do |o|
   o.banner << "By default, #{File.basename $0} will search for all annotations in current directory.\n"
 
   o.on_head("Available options:")
-  o.on("-a", "--all",                "Search TODO, FIXME and OPTIMIZE annotations") { tags << TAGS }
+  o.on("-a", "--all",                "Search TODO, FIXME and OPTIMIZE annotations") { tags << AnnotationExtractor::TAGS }
   o.on("-t", "--todo",               "Search TODO annotations")                     { tags << "TODO" }
   o.on("-f", "--fixme",              "Search FIXME annotations")                    { tags << "FIXME" }
-  o.on("-i", "--improve",            "Search OPTIMIZE annotations")                 { tags << "OPTIMIZE" }
+  o.on("-z", "--optimize",           "Search OPTIMIZE annotations")                 { tags << "OPTIMIZE" }
   o.on("-c", "--custom=TAG", String, "Search TAG annotations")                      { |v| tags << v }
   o.on("-o", "--out=FILE",   String, "Save output in FILE")                         { |v| file = v }
   o.on("-v", "--version",            "Print notes version")                         { puts "notes: version #{AnnotationExtractor::VERSION}" ; exit }

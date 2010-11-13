@@ -73,8 +73,8 @@ This code can be used as a Ruby lib. Let's see how it works in irb:
 
   $ irb
   >> require 'notes'
-  >> Notes::Reader.tags << "FOO"
-  >> notes = Notes::Reader.new "test/data/sample.c"
+  >> AnnotationExtractor.tags << "FOO"
+  >> notes = AnnotationExtractor.new "test/data/sample.c"
   >> notes.list
   >> notes.get "FIXME"
   >> notes.write "TODO.rdoc"
