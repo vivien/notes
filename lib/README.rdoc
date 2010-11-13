@@ -1,0 +1,76 @@
+= Notes
+
+== grep annotations in source files
+
+This lib provides a Ruby library and command line tool to find annotations in source files such as:
+ * TODO
+ * FIXME
+ * OPTIMIZE
+Custom tags can also be found.
+
+The purpose of this code is to get a generic version of the `rake notes' command (only used for Ruby on Rails applications).
+It will look for tags recursively in every given files (or in current directory by default).
+
+== Installation
+
+= SOON!
+
+Notes is available on Rubygems.org[http://rubygems.org/gems/notes] and can be installed with:
+
+  $ gem install notes
+
+This command needs Rubygems (rubygems package on Ubuntu).
+
+== Usage
+
+=== Command line tool
+
+  $ notes [options] [file...]
+
+  $ ruby ../bin/notes --help
+  Usage: notes [options] [file...]
+  Search recursively for annotations in source code.
+  By default, notes will search for all annotations in current directory.
+  Available options:
+      -a, --all                        Search TODO, FIXME and OPTIMIZE annotations
+      -t, --todo                       Search TODO annotations
+      -f, --fixme                      Search FIXME annotations
+      -i, --improve                    Search OPTIMIZE annotations
+      -c, --custom=TAG                 Search TAG annotations
+      -o, --out=FILE                   Save output in FILE
+      -v, --version                    Print notes version
+  Example: notes -ac IMPROVE test.c lib
+  will search for TODO, FIXME, OPTIMIZE and IMPROVE annotations in test.c lib directory.
+
+Another example:
+
+  $ notes test/data/sample.c
+  ../test/data/sample.c:16: TODO: first thing to do
+  ../test/data/sample.c:26: FIXME: first fixme thing
+  ../test/data/sample.c:32: TODO: second todo thing!
+  ../test/data/sample.c:42: OPTIMIZE: make it better
+  ../test/data/sample.c:47: TODO: hello world
+
+If the terminal allows it, colors will be displayed for files and tags.
+
+=== Lib
+
+This code can be used as a Ruby lib. Let's see how it works in irb:
+
+  $ irb
+  >> require 'notes'
+  >> notes = Notes::Reader.new "../test/data/sample.c"
+  >> notes.find
+  >> notes.list
+  >> notes.get "FIXME"
+  >> notes.write "TODO.rdoc"
+
+== License
+
+  ------------------------------------------------------------------------------
+   "THE BEER-WARE LICENSE" (Revision 42):
+   <vivien.didelot@gmail.com> wrote this gem. As long as you retain this notice
+   you can do whatever you want with this stuff. If we meet some day, and you
+   think this stuff is worth it, you can buy me a beer in return. Vivien Didelot
+  ------------------------------------------------------------------------------
+
