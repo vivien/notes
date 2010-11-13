@@ -45,17 +45,17 @@ ARGV.options do |o|
   o.on("-i", "--improve",            "Search OPTIMIZE annotations")                 { tags << "OPTIMIZE" }
   o.on("-c", "--custom=TAG", String, "Search TAG annotations")                      { |v| tags << v }
   o.on("-o", "--out=FILE",   String, "Save output in FILE")                         { |v| file = v }
-  o.on("-v", "--version",            "Print notes version")                         { puts "notes: version #{NOTES_VERSION}" ; exit }
+  o.on("-v", "--version",            "Print notes version")                         { puts "notes: version #{AnnotationExtractor::VERSION}" ; exit }
 
   o.on_tail("Example: #{File.basename $0} -ac IMPROVE test.c lib\nwill search for TODO, FIXME, OPTIMIZE and IMPROVE annotations in test.c lib directory.")
 end
 
 begin
   ARGV.options.parse!
-  Notes::Reader.tags = tags.flatten unless tags.empty?
+  AnnotationExtractor.tags = tags.flatten unless tags.empty?
   source = ARGV
 
-  notes = Notes::Reader.new(source)
+  notes = AnnotationExtractor.new(source)
 
   file.nil? ? display(notes.list) : notes.write(file)
 rescue => e

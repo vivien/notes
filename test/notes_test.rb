@@ -9,35 +9,33 @@ require "test/unit"
 require "notes"
 require "tempfile"
 
-include Notes
-
 class NotesTest < Test::Unit::TestCase
   def setup
     @sample = "#{File.join "..", "test", "data", "sample.c"}"
   end
 
   def test_new
-    notes = Reader.new(@sample)
+    notes = AnnotationExtractor.new(@sample)
     assert_equal 5, notes.list.size
-    notes.list.each { |a| assert_kind_of Notes::Annotation, a }
+    notes.list.each { |a| assert_kind_of AnnotationExtractor::Annotation, a }
 
-    Reader.tags << "FOO"
-    notes = Reader.new(@sample)
+    AnnotationExtractor.tags << "FOO"
+    notes = AnnotationExtractor.new(@sample)
     assert_equal 6, notes.list.size
 
-    Reader.tags = "OPTIMIZE"
-    notes = Reader.new(@sample)
+    AnnotationExtractor.tags = "OPTIMIZE"
+    notes = AnnotationExtractor.new(@sample)
     assert_equal 1, notes.list.size
     assert_equal "make it better", notes.list.first.text
 
-    Reader.tags = "FOO"
-    notes = Reader.new(@sample)
+    AnnotationExtractor.tags = "FOO"
+    notes = AnnotationExtractor.new(@sample)
     assert_equal 1, notes.list.size
     assert_equal "a custom tag", notes.list.first.text
   end
 
   def test_get
-    notes = Reader.new(@sample)
+    notes = AnnotationExtractor.new(@sample)
     assert_equal 3, notes.get("TODO").size
     assert_equal 1, notes.get("FIXME").size
     assert_equal 1, notes.get("OPTIMIZE").size
@@ -46,8 +44,8 @@ class NotesTest < Test::Unit::TestCase
   def test_write
     tempfile = Tempfile.new("notes").path
 
-    Reader.tags = Reader::TAGS
-    notes = Reader.new(@sample)
+    AnnotationExtractor.tags = AnnotationExtractor::TAGS
+    notes = AnnotationExtractor.new(@sample)
     notes.write tempfile
 
     assert_equal 5, File.readlines(tempfile).size
