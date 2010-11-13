@@ -57,9 +57,15 @@ If the terminal allows it, colors will be displayed for files and tags.
 
 Another again:
 
-  $ notes -o TODO.txt
+  $ notes -o TODO.txt test/data/sample.c
 
-will write all notes to a TODO.txt file.
+will write all notes to a TODO.txt file. It will look like that:
+
+   * [TODO    ] ../test/data/sample.c (16): first thing to do
+   * [FIXME   ] ../test/data/sample.c (26): first fixme thing
+   * [TODO    ] ../test/data/sample.c (32): second todo thing!
+   * [OPTIMIZE] ../test/data/sample.c (42): make it better
+   * [TODO    ] ../test/data/sample.c (47): hello world
 
 === Lib
 
@@ -67,8 +73,8 @@ This code can be used as a Ruby lib. Let's see how it works in irb:
 
   $ irb
   >> require 'notes'
+  >> Notes::Reader.tags << "FOO"
   >> notes = Notes::Reader.new "test/data/sample.c"
-  >> notes.find
   >> notes.list
   >> notes.get "FIXME"
   >> notes.write "TODO.rdoc"

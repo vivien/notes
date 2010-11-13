@@ -9,21 +9,50 @@
 require 'rubygems'
 require 'rak'
 
+#TODO documentation
 module Notes
   class Reader
-    attr_reader :list, :target
+    # Default tags list
+    TAGS = ["TODO", "FIXME", "OPTIMIZE"]
 
-    def initialize(target = nil)
-      @target = Array.new
-      @target.push(target).flatten! unless target.nil?
+    # Trick not to use @@tags class variable, but works the same way.
+    @tags = TAGS.clone
+    class << self
+      attr_reader :tags
+      def tags=(tags)
+        @tags = tags.to_a
+      end
     end
 
-    def find(tags = TAGS)
-      tags = [tags] unless tags.is_a? Array
+    attr_reader :list
 
-      cmd = "rak " << "'#{tags * "|"}' " << @target * " "
-      out = `#{cmd}`.strip
-      raise out if $?.exitstatus > 0
+    def initialize(source = Dir.pwd)
+      @source = [].push(source).flatten
+      @list = Array.new
+
+      search
+    end
+
+    def get(tag)
+      @list.find_all { |a| a.tag == tag }
+    end
+
+    def write(file)
+      longest_tag = @list.max { |a, b| a.tag.size <=> b.tag.size }.tag.size
+
+      File.open(file, 'w') do |f|
+        @list.each do |a|
+          f.write(sprintf(" * [%-#{longest_tag}s] %s (%s): %s\n",
+                          a.tag, a.file, a.line, a.text))
+        end
+      end
+    end
+
+    private
+
+    def search
+      tags = self.class.tags.join("|")
+      source = @source.join(" ")
 
       # Because of different rak versions,
       # rak system call outputs are not similar.
@@ -33,13 +62,15 @@ module Notes
         raise "Can't get rak version"
       end
 
-      # 0.9 is the current rak gem version.
-      # 1.1 is the rak version from the github repo.
+      # 0.9 is the current rak version from rubygems.
+      # 1.1 is the current rak version from the github repo.
       if rak_version == "1.1"
-        regex = /^(.*):(\d*):.*(#{tags * "|"})\s*(.*)$/
+        regex = /^(.*):(\d*):.*(#{tags})\s*(.*)$/
       else
-        regex = /^([^\s]+)\s+(\d+)\|.*(#{tags * "|"})\s*(.*)$/
+        regex = /^([^\s]+)\s+(\d+)\|.*(#{tags})\s*(.*)$/
       end
+
+      out = `rak '#{tags}' #{source}`.strip
 
       @list = out.split("\n").map do |l|
         if l =~ regex
@@ -52,22 +83,6 @@ module Notes
         else
           # Just for a debug purpose
           raise "notes: does not match regexp => \"#{l}\""
-        end
-      end
-    end
-
-    def get(tag)
-      res = @list.find_all { |a| a.tag == tag }
-      res.empty? ? nil : res
-    end
-
-    def write(file)
-      longest_tag = @list.max { |a, b| a.tag.size <=> b.tag.size }.tag.size
-
-      File.open(file, 'w') do |f|
-        @list.each do |a|
-          f.write(sprintf(" * [%-#{longest_tag}s] %s (%s): %s\n",
-                          a.tag, a.file, a.line, a.text))
         end
       end
     end

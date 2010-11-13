@@ -30,7 +30,7 @@ def display(list)
 end
 
 tags = []
-target = []
+source = []
 file = nil
 
 ARGV.options do |o|
@@ -52,11 +52,10 @@ end
 
 begin
   ARGV.options.parse!
-  tags = tags.empty? ? Notes::TAGS : tags.flatten
-  target = ARGV
+  Notes::Reader.tags = tags.flatten unless tags.empty?
+  source = ARGV
 
-  notes = Notes::Reader.new(target)
-  notes.find(tags)
+  notes = Notes::Reader.new(source)
 
   file.nil? ? display(notes.list) : notes.write(file)
 rescue => e

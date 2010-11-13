@@ -11,7 +11,4 @@ require 'notes/reader'
 module Notes
   # Version of notes
   NOTES_VERSION = "0.0.1"
-
-  # Default tags list
-  TAGS = ["TODO", "FIXME", "OPTIMIZE"]
 end
