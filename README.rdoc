@@ -35,7 +35,7 @@ For details, see the help.
       -a, --all                        Search TODO, FIXME and OPTIMIZE annotations
       -t, --todo                       Search TODO annotations
       -f, --fixme                      Search FIXME annotations
-      -i, --improve                    Search OPTIMIZE annotations
+      -z, --optimize                   Search OPTIMIZE annotations
       -c, --custom=TAG                 Search TAG annotations
       -o, --out=FILE                   Save output in FILE
       -v, --version                    Print notes version
