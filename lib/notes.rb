@@ -9,7 +9,6 @@
 require 'rubygems'
 require 'rak'
 
-#TODO documentation
 class AnnotationExtractor
   VERSION = "0.0.1"
 
@@ -17,6 +16,7 @@ class AnnotationExtractor
   class Annotation
     attr_accessor :file, :line, :tag, :text
 
+    # Instanciate a new Annotation from a hash.
     def initialize(args)
       @file = args[:file]
       @line = args[:line]
@@ -29,6 +29,7 @@ class AnnotationExtractor
   TAGS = ["TODO", "FIXME", "OPTIMIZE"]
 
   # Trick not to use @@tags class variable, but works the same way.
+  # Custom tags can be added with AnnotationExtractor.tags << "FOO".
   @tags = TAGS.clone
   class << self
     attr_reader :tags
@@ -37,8 +38,10 @@ class AnnotationExtractor
     end
   end
 
+  # The list of all notes.
   attr_reader :list
 
+  # Instanciate a new extractor for the given target files.
   def initialize(source = Dir.pwd)
     @source = [].push(source).flatten
     @list = Array.new
@@ -46,10 +49,12 @@ class AnnotationExtractor
     search
   end
 
+  # Get annotation with tag 'tag' from the list.
   def get(tag)
     @list.find_all { |a| a.tag == tag }
   end
 
+  # Write all annotations to the file 'file'.
   def write(file)
     longest_tag = @list.max { |a, b| a.tag.size <=> b.tag.size }.tag.size
 
@@ -63,6 +68,7 @@ class AnnotationExtractor
 
   private
 
+  # Search for annotations.
   def search
     tags = self.class.tags.join("|")
     source = @source.join(" ")
