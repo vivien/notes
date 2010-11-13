@@ -46,7 +46,7 @@ class AnnotationExtractor
     @source = [].push(source).flatten
     @list = Array.new
 
-    search
+    extract
   end
 
   # Get annotation with tag 'tag' from the list.
@@ -68,8 +68,8 @@ class AnnotationExtractor
 
   private
 
-  # Search for annotations.
-  def search
+  # Extract for annotations.
+  def extract
     tags = self.class.tags.join("|")
     source = @source.join(" ")
 
