@@ -25,9 +25,11 @@ This command needs Rubygems (rubygems package on Ubuntu).
 
 === Command line tool
 
-  $ notes [options] [file...]
+  notes [options] [file...]
 
-  $ ruby ../bin/notes --help
+For details, see the help.
+
+  $ ruby notes --help
   Usage: notes [options] [file...]
   Search recursively for annotations in source code.
   By default, notes will search for all annotations in current directory.
@@ -53,13 +55,19 @@ Another example:
 
 If the terminal allows it, colors will be displayed for files and tags.
 
+Another again:
+
+  $ notes -o TODO.txt
+
+will write all notes to a TODO.txt file.
+
 === Lib
 
 This code can be used as a Ruby lib. Let's see how it works in irb:
 
   $ irb
   >> require 'notes'
-  >> notes = Notes::Reader.new "../test/data/sample.c"
+  >> notes = Notes::Reader.new "test/data/sample.c"
   >> notes.find
   >> notes.list
   >> notes.get "FIXME"
