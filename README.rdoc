@@ -40,7 +40,7 @@ For details, see the help.
       -o, --out=FILE                   Save output in FILE
       -v, --version                    Print notes version
   Example: notes -ac IMPROVE test.c lib
-  will search for TODO, FIXME, OPTIMIZE and IMPROVE annotations in test.c lib directory.
+  will search for TODO, FIXME, OPTIMIZE and IMPROVE annotations in test.c file and lib directory.
 
 Another example:
 
@@ -71,11 +71,11 @@ This code can be used as a Ruby lib. Let's see how it works in irb:
 
   $ irb
   >> require 'notes'
-  >> AnnotationExtractor.tags << "FOO"
-  >> notes = AnnotationExtractor.new "test/data/sample.c"
-  >> notes.list
-  >> notes.get "FIXME"
-  >> notes.write "TODO.rdoc"
+  >> AnnotationExtractor.tags << "FOO" # Add custom tag
+  >> notes = AnnotationExtractor.new "test/data/sample.c" # Parse file
+  >> notes.list # Return the array of annotations
+  >> notes.get "FIXME" # Return the array of FIXME annotations only
+  >> notes.write "TODO.rdoc" # Write all annotations in a file
 
 == License
 
