@@ -3,9 +3,9 @@
 == grep annotations in source files
 
 This lib provides a Ruby library and command line tool to find annotations in source files such as:
- * TODO
- * FIXME
- * OPTIMIZE
+* TODO
+* FIXME
+* OPTIMIZE
 Custom tags can also be found.
 
 The purpose of this code is to get a generic version of the `rake notes' command (only used for Ruby on Rails applications).
