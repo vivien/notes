@@ -23,13 +23,13 @@ int main()
     size_t a_size = sizeof(struct sockaddr_in);
     void *buffer = malloc(STEP);
 
-    //FIXME first fixme thing
+    //FIXME: first fixme thing
     int port = 4242;
 
     /* address server sock */
     struct sockaddr_in addr = {AF_INET, htons(port), {htonl(INADDR_ANY)}};
 
-    //TODO second todo thing!
+    //TODO : second todo thing!
     /* client sock */
     struct sockaddr_in client;
 
@@ -39,7 +39,7 @@ int main()
     /* bind socket to local */
     bind(sock, (struct sockaddr*) &addr, sizeof(struct sockaddr_in));
 
-    //OPTIMIZE make it better
+    //OPTIMIZE make it better  
     while(1)
     {
         //FOO a custom tag

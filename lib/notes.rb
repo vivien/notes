@@ -84,9 +84,9 @@ class AnnotationExtractor
     # 0.9 is the current rak version from rubygems.
     # 1.1 is the current rak version from the github repo.
     if rak_version == "1.1"
-      regex = /^(.*):(\d*):.*(#{tags})\s*(.*)$/
+      regex = /^(.*):(\d*):.*(#{tags})\s*:?(.*)$/
     else
-      regex = /^([^\s]+)\s+(\d+)\|.*(#{tags})\s*(.*)$/
+      regex = /^([^\s]+)\s+(\d+)\|.*(#{tags})\s*:?(.*)$/
     end
 
     out = `rak '#{tags}' #{source}`.strip

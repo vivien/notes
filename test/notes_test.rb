@@ -23,6 +23,14 @@ class NotesTest < Test::Unit::TestCase
     notes = AnnotationExtractor.new(@sample)
     assert_equal 6, notes.list.size
 
+    # Test exact text
+    assert_equal "first thing to do", notes.list[0].text
+    assert_equal "first fixme thing", notes.list[1].text
+    assert_equal "second todo thing!", notes.list[2].text
+    assert_equal "make it better", notes.list[3].text
+    assert_equal "a custom tag", notes.list[4].text
+    assert_equal "hello world", notes.list[5].text
+
     AnnotationExtractor.tags = "OPTIMIZE"
     notes = AnnotationExtractor.new(@sample)
     assert_equal 1, notes.list.size
