@@ -68,9 +68,10 @@ class AnnotationExtractor
 
   private
 
-  # Extract for annotations.
+  # Extract annotations.
   def extract
     tags = self.class.tags.join("|")
+    suffix = "\s?:?" # Allowed annotation suffix.
     source = @source.join(" ")
 
     # Because of different rak versions,
@@ -84,12 +85,12 @@ class AnnotationExtractor
     # 0.9 is the current rak version from rubygems.
     # 1.1 is the current rak version from the github repo.
     if rak_version == "1.1"
-      regex = /^(.*):(\d*):.*(#{tags})\s*:?(.*)$/
+      regex = /^(.*):(\d*):.*(#{tags})#{suffix}(.*)$/
     else
-      regex = /^([^\s]+)\s+(\d+)\|.*(#{tags})\s*:?(.*)$/
+      regex = /^([^\s]+)\s+(\d+)\|.*(#{tags})#{suffix}(.*)$/
     end
 
-    out = `rak '#{tags}' #{source}`.strip
+    out = `rak '(#{tags})#{suffix}\s+' #{source}`.strip
 
     @list = out.split("\n").map do |l|
       if l =~ regex

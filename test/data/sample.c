@@ -43,6 +43,9 @@ int main()
     while(1)
     {
         //FOO a custom tag
+        //FOOBAR this should not be found if 'FOO' is asked. Same thing for:
+        //TODOLIST blah blah
+        //TODO_LIST etc.
         while (recvfrom(sock, buffer, size, MSG_PEEK, NULL, NULL) == size)
             buffer = realloc(buffer, size += STEP); //TODO hello world
 
