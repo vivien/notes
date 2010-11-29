@@ -10,7 +10,7 @@ require 'rubygems'
 require 'rak'
 
 class AnnotationExtractor
-  VERSION = "0.0.1"
+  VERSION = "0.0.2"
 
   # An annotation class.
   class Annotation

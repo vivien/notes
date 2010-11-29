@@ -1,3 +1,8 @@
+== 0.0.2
+
+* Now search for exact word. e.g. TODO_LIST or TODOLIST will be ignored if TODO is asked.
+* A suffix is allowed (i.e. ':' or ' :') and will be ignored in annotation text.
+
 == 0.0.1
 
 Initial version of Notes gem.
