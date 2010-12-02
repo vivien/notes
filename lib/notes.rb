@@ -85,10 +85,13 @@ class AnnotationExtractor
     # 0.9 is the current rak version from rubygems.
     # 1.1 is the current rak version from the github repo.
     if rak_version == "1.1"
+      #TODO /^(.+):(\d+):...?
       regex = /^(.*):(\d*):.*(#{tags})#{suffix}(.*)$/
     else
       regex = /^([^\s]+)\s+(\d+)\|.*(#{tags})#{suffix}(.*)$/
     end
+    # TODO extract first matching annotation if there're many on a line.
+    # e.g. "TODO: Rename $TODOLIST variable."
 
     out = `rak '(#{tags})#{suffix}\s+' #{source}`.strip
 
