@@ -5,108 +5,103 @@
 # think this stuff is worth it, you can buy me a beer in return. Vivien Didelot
 # ------------------------------------------------------------------------------
 
-# Useless, but informs that rak should be installed.
-require 'rubygems'
-require 'rak'
+require 'coderay'
+require 'coderay/helpers/file_type'
+require 'coderay/encoders/annotation_extractor'
 
-class AnnotationExtractor
-  VERSION = "0.0.2"
+# TODO should grep on all text tokens if @lang == :text
+# TODO add a "split comment" or "inline" option and enable it if @lang == :text
 
-  # An annotation class.
-  class Annotation
-    attr_accessor :file, :line, :tag, :text
+module Notes
+  VERSION = "2.0"
+  DEFAULT_TAGS = [:todo, :fixme, :optimize, :note]
 
-    # Instanciate a new Annotation from a hash.
-    def initialize(args)
-      @file = args[:file]
-      @line = args[:line]
-      @tag = args[:tag]
-      @text = args[:text]
+  # Scan some code. Should give the corresponding language
+  # (see CodeRay supported languages)
+  #
+  #   Notes.scan("a = 1 + 1", :ruby, :todo) { |text| puts text }
+  def self.scan(code, lang, *annotations, &block)
+    # block.nil? and return enum_for(__method__, code, lang, *annotations)
+    scanner = Scanner.new
+    scanner.annotations = annotations.flatten unless annotations.empty?
+    scanner.on_annotation(&block) unless block.nil?
+    scanner.scan(code, lang)
+  end
+
+  # Scan a file for the given annotations.
+  #
+  #   Notes.scan_file("test/dummy.rb") do |text, type, line|
+  #     puts "#{todo}:#{line}: #{text}"
+  #   end
+  #
+  #   Notes.scan_file("test/dummy.rb", :fixme) { |text| puts text }
+  def self.scan_file(filename, *annotations, &block)
+    scanner = Scanner.new
+    scanner.annotations = annotations.flatten unless annotations.empty?
+    scanner.on_annotation(&block) unless block.nil?
+    scanner.scan_file(filename)
+  end
+
+  def self.file_type(filename)
+    CodeRay::FileType.fetch filename, :text, true
+  end
+
+  class Scanner
+    def initialize
+      @encoder = CodeRay::Encoders::AnnotationExtractor.new
+      self.annotations = [:all]
     end
-  end
 
-  # Default tags list
-  TAGS = ["TODO", "FIXME", "OPTIMIZE"]
-
-  # Trick not to use @@tags class variable, but works the same way.
-  # Custom tags can be added with AnnotationExtractor.tags << "FOO".
-  @tags = TAGS.clone
-  class << self
-    attr_reader :tags
-    def tags=(tags)
-      @tags = tags.is_a?(Array) ? tags : [tags]
+    def annotations
+      @encoder.annotations
     end
-  end
 
-  # The list of all notes.
-  attr_reader :list
-
-  # Instanciate a new extractor for the given target files.
-  def initialize(source = Dir.pwd)
-    @source = [].push(source).flatten
-    @list = Array.new
-
-    extract
-  end
-
-  # Get annotation with tag 'tag' from the list.
-  def get(tag)
-    @list.find_all { |a| a.tag == tag }
-  end
-
-  # Write all annotations to the file 'file'.
-  def write(file)
-    longest_tag = @list.max { |a, b| a.tag.size <=> b.tag.size }.tag.size
-
-    File.open(file, 'w') do |f|
-      @list.each do |a|
-        f.write(sprintf(" * [%-#{longest_tag}s] %s (%s): %s\n",
-                        a.tag, a.file, a.line, a.text))
+    # Set an array of annotations to search
+    # A Symbol corresponds to a standard annotation while a String is a custom one.
+    # Defaults annotations are:
+    # :todo     => "TODO"
+    # :fixme    => "FIXME"
+    # :optimize => "OPTIMIZE"
+    # :note     => "NOTE"
+    #
+    # Special Symbol :all means every default annotation and :none means none of them.
+    #
+    #   scan.annotations = [:all, "@@@"] # => [:todo, :fixme, :optimize, :notes, "@@@"]
+    def annotations=(an)
+      tmp = []
+      an.each do |a|
+        case a
+        when :all   then tmp.concat(DEFAULT_TAGS)
+        when :none  then tmp.clear
+        when Symbol then DEFAULT_TAGS.include?(a) and tmp << a
+        when String then tmp << a
+        else puts "invalid annotation #{a}"
+        end
       end
-    end
-  end
-
-  private
-
-  # Extract annotations.
-  def extract
-    tags = self.class.tags.join("|")
-    suffix = "\s?:?" # Allowed annotation suffix.
-    source = @source.join(" ")
-
-    # Because of different rak versions,
-    # rak system call outputs are not similar.
-    if `rak --version` =~ /rak (\d\.\d)/
-      rak_version = $1
-    else
-      raise "Can't get rak version"
+      @encoder.annotations = tmp.uniq
     end
 
-    # 0.9 is the current rak version from rubygems.
-    # 1.1 is the current rak version from the github repo.
-    if rak_version == "1.1"
-      #TODO /^(.+):(\d+):...?
-      regex = /^(.*):(\d*):.*(#{tags})#{suffix}(.*)$/
-    else
-      regex = /^([^\s]+)\s+(\d+)\|.*(#{tags})#{suffix}(.*)$/
+    # Set the action to do when a annotation is found
+    #
+    #   scan.on_annotation do |text, kind, line|
+    #     puts "#{kind}:#{line}: #{text}"
+    #   end
+    def on_annotation(&block)
+      @encoder.set_callback(&block)
     end
-    # TODO extract first matching annotation if there're many on a line.
-    # e.g. "TODO: Rename $TODOLIST variable."
+    #alias set_callback on_annotation
 
-    out = `rak '(#{tags})#{suffix}\s+' #{source}`.strip
+    # Scan directly some code, need to specify the language
+    # (see CodeRay supported languages)
+    def scan(code, lang)
+      @encoder.encode(code, lang)
+    end
 
-    @list = out.split("\n").map do |l|
-      if l =~ regex
-        Annotation.new({
-          :file => $1,
-          :line => $2.to_i,
-          :tag => $3,
-          :text => $4.strip
-        })
-      else
-        # Just for a debug purpose
-        raise "notes: does not match regexp => \"#{l}\""
-      end
+    # Scan a given file
+    def scan_file(filename)
+      lang = Notes.file_type(filename)
+      code = File.read(filename)
+      scan(code, lang)
     end
   end
 end
