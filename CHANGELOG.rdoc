@@ -1,3 +1,7 @@
+== 0.0.3
+
+Force rak version to 1.0
+
 == 0.0.2
 
 * Now search for exact word. e.g. TODO_LIST or TODOLIST will be ignored if TODO is asked.

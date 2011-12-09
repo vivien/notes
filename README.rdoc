@@ -19,6 +19,8 @@ Notes is available on Rubygems.org[http://rubygems.org/gems/notes] and can be in
 
 This command needs Rubygems (rubygems package on Ubuntu).
 
+Note: it depends on rak version = 1.0 and rainbow version >= 1.1.
+
 == Usage
 
 === Command line tool
