@@ -46,6 +46,9 @@ ARGV.options do |o|
   o.on("-c", "--custom=TAG", String, "Search TAG annotations")                      { |v| tags << v }
   o.on("-o", "--out=FILE",   String, "Save output in FILE")                         { |v| file = v }
   o.on("-v", "--version",            "Print notes version")                         { puts "notes: version #{AnnotationExtractor::VERSION}" ; exit }
+  o.on(      "--[no-]colour",        "override colour capability detection")        { |v| Sickill::Rainbow.enabled = v }
+  o.on("-c", "--[no-]color",         "override color capability detection")         { |v| Sickill::Rainbow.enabled = v }
+
 
   o.on_tail("Example: #{File.basename $0} -ac IMPROVE test.c lib\nwill search for TODO, FIXME, OPTIMIZE and IMPROVE annotations in test.c lib directory.")
 end
