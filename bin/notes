@@ -1,68 +1,77 @@
 #!/usr/bin/env ruby
 
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # "THE BEER-WARE LICENSE" (Revision 42):
-# <vivien.didelot@gmail.com> wrote this file. As long as you retain this notice
-# you can do whatever you want with this stuff. If we meet some day, and you
-# think this stuff is worth it, you can buy me a beer in return. Vivien Didelot
-# ------------------------------------------------------------------------------
-
-# Command line tool to grep annotations from source files.
-# Author:: Vivien 'v0n' Didelot <vivien.didelot@gmail.com>
+# <vivien@didelot.org> wrote this file. As long as you retain this notice you
+# can do whatever you want with this stuff. If we meet some day, and you think
+# this stuff is worth it, you can buy me a beer in return Vivien Didelot
+# ----------------------------------------------------------------------------
 
 require 'notes'
-
-require 'rainbow'
 require 'optparse'
+require 'paint'
+require 'find'
 
-def display(list)
-  list.each do |a|
-    color = case a.tag
-            when "TODO" then :yellow
-            when "FIXME" then :red
-            when "OPTIMIZE" then :green
-            else :blue
-            end
-
-    printf("%s:%s: %s: %s\n",
-           a.file.color(:magenta), a.line, a.tag.color(color), a.text)
-  end
+def pretty_print(note)
+  colors = {
+    "TODO"  => 'green',
+    "FIXME" => 'yellow',
+    "XXX"   => 'red',
+    :custom => 'cyan'
+  }
+  # grep style format
+  col = Paint[':', :cyan]
+  format = Paint['%s', :magenta] + col
+  format << Paint['%s', :green] + col
+  format << Paint['%s', colors[note.tag] || colors[:custom], :bold] + col
+  format << "%s\n"
+  printf(format,
+         note.source || "(stdin)",
+         note.line,
+         note.tag,
+         note.text.rstrip)
 end
 
-tags = []
-source = []
-file = nil
+tags = Notes::TAGS.dup
 
 ARGV.options do |o|
-  o.banner = "Usage: #{File.basename $0} [options] [file...]\n"
-  o.banner << "Search recursively for annotations in source code.\n"
-  o.banner << "By default, #{File.basename $0} will search for all annotations in current directory.\n"
-
-  o.on_head("Available options:")
-  o.on("-a", "--all",                "Search TODO, FIXME and OPTIMIZE annotations") { tags << AnnotationExtractor::TAGS }
-  o.on("-t", "--todo",               "Search TODO annotations")                     { tags << "TODO" }
-  o.on("-f", "--fixme",              "Search FIXME annotations")                    { tags << "FIXME" }
-  o.on("-z", "--optimize",           "Search OPTIMIZE annotations")                 { tags << "OPTIMIZE" }
-  o.on("-c", "--custom=TAG", String, "Search TAG annotations")                      { |v| tags << v }
-  o.on("-o", "--out=FILE",   String, "Save output in FILE")                         { |v| file = v }
-  o.on("-v", "--version",            "Print notes version")                         { puts "notes: version #{AnnotationExtractor::VERSION}" ; exit }
-  o.on(      "--[no-]colour",        "override colour capability detection")        { |v| Sickill::Rainbow.enabled = v }
-  o.on("-c", "--[no-]color",         "override color capability detection")         { |v| Sickill::Rainbow.enabled = v }
-
-
-  o.on_tail("Example: #{File.basename $0} -ac IMPROVE test.c lib\nwill search for TODO, FIXME, OPTIMIZE and IMPROVE annotations in test.c lib directory.")
+  o.version = Notes::VERSION
+  o.banner = 'Usage: notes [OPTIONS] [FILE]...'
+  for tag in tags do
+    o.on("--no-#{tag.downcase}", "Do not search #{tag} tags") { tags.delete(tag) }
+  end
+  o.on('-t', '--tag=TAG', 'Search TAG tags') { |tag| tags.push(tag).uniq! }
+  o.on('--no-color', 'Do not colorize ouput') { Paint.mode = 0 }
 end
 
 begin
   ARGV.options.parse!
-  AnnotationExtractor.tags = tags.flatten unless tags.empty?
-  source = ARGV
-
-  notes = AnnotationExtractor.new(source)
-
-  file.nil? ? display(notes.list) : notes.write(file)
 rescue => e
-  STDERR.puts "error: #{e}"
+  STDERR.puts "Oops, #{e.message}"
+end
+
+scanner = Notes::Scanner.new
+scanner.look_for tags
+scanner.on_note do |note|
+  pretty_print(note)
+end
+
+if ARGV.first.eql? ?-
+  source = STDIN.read
+  scanner.scan(source)
+  exit
+end
+
+paths = ARGV.dup
+paths.empty? and paths << Dir.pwd
+
+Find.find(*paths) do |path|
+  if File.basename(path).start_with? ?.
+    Find.prune unless paths.include? path
+  end
+  next if File.directory? path
+
+  scanner.scan_file(path)
 end
 
 exit

@@ -5,17 +5,18 @@
 # think this stuff is worth it, you can buy me a beer in return. Vivien Didelot
 # ------------------------------------------------------------------------------
 
-require "test/unit"
+require "minitest"
 require "notes"
 require "tempfile"
 
-class NotesTest < Test::Unit::TestCase
+class TestNotes < MiniTest::Unit::TestCase
   def setup
-    @sample = "#{File.join "..", "test", "data", "sample.c"}"
+    @sample = File.join __FILE__, "..", "test", "data", "sample.c"
   end
 
   def test_new
-    notes = AnnotationExtractor.new(@sample)
+    notes = Notes::Scanner.new
+    assert_kind_of Enumerator, notes
     assert_equal 5, notes.list.size
     notes.list.each { |a| assert_kind_of AnnotationExtractor::Annotation, a }
 
