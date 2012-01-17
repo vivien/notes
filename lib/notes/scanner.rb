@@ -19,7 +19,7 @@ module Notes
 
     # TODO doc
     def scan source
-      source.split(?\n).each_with_index do |line, i|
+      source.split("\n").each_with_index do |line, i|
         if line =~ regexp
           @action.call Note.new($1, line, i + 1)
         end
@@ -45,7 +45,7 @@ module Notes
     private
 
     def regexp
-      /(#{@tags.join(?|)})\b/
+      /(#{@tags.join('|')})\b/
     end
 
   end # Scanner
