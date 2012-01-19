@@ -56,17 +56,14 @@ scanner.on_note do |note|
   pretty_print(note)
 end
 
-if ARGV.first.eql? '-'
+if ARGV.empty? || ARGV.first == '-'
   source = STDIN.read
   scanner.scan(source)
   exit
 end
 
-paths = ARGV.dup
-paths.empty? and paths << Dir.pwd
-
-Find.find(*paths) do |path|
-  unless paths.include? path
+Find.find(*ARGV) do |path|
+  unless ARGV.include? path
     Find.prune if File.basename(path).start_with? '.'
   end
   next if File.directory? path
