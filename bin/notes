@@ -66,8 +66,8 @@ paths = ARGV.dup
 paths.empty? and paths << Dir.pwd
 
 Find.find(*paths) do |path|
-  if File.basename(path).start_with? '.'
-    Find.prune unless paths.include? path
+  unless paths.include? path
+    Find.prune if File.basename(path).start_with? '.'
   end
   next if File.directory? path
 
