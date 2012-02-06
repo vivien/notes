@@ -26,7 +26,7 @@ def pretty_print(note)
   format << Paint['%s', colors[note.tag] || colors[:custom], :bold] + col
   format << "%s\n"
   printf(format,
-         note.source || "(stdin)",
+         note.source,
          note.line,
          note.tag,
          note.text.rstrip)
@@ -54,12 +54,6 @@ scanner = Notes::Scanner.new
 scanner.look_for tags
 scanner.on_note do |note|
   pretty_print(note)
-end
-
-if ARGV.first.eql? '-'
-  source = STDIN.read
-  scanner.scan(source)
-  exit
 end
 
 paths = ARGV.dup
