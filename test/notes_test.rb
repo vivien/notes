@@ -37,4 +37,11 @@ class TestNotes < MiniTest::Unit::TestCase
     assert_equal "//TODO first thing to do\n", note.first.text
     assert_equal "TODO", note.first.tag
   end
+
+  def test_match
+    assert Notes.scan("TODO").any?
+    assert !Notes.scan("TODOX").any?
+    assert !Notes.scan("XTODO").any?
+    assert !Notes.scan("XTODOX").any?
+  end
 end
