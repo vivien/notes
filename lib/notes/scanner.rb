@@ -45,7 +45,7 @@ module Notes
     private
 
     def regexp
-      /(#{@tags.join('|')})\b/
+      /\b(#{@tags.join('|')})\b/
     end
 
   end # Scanner
