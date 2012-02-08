@@ -1,38 +1,53 @@
-Notes
-=====
+# Notes
 
 grep tags in source files
 
-This gem provides a Ruby library and a command line tool to find tags in
-source files. The defaults are:
+This gem provides a command line tool and a Ruby library to find tags in
+source code. Defaults tags are *TODO*, *FIXME*, and *XXX*.
+Custom tags can be found as well.
 
-* TODO
-* FIXME
-* XXX
+It's kind of a generic version of the `rake notes` command,
+which is only available in Ruby on Rails applications.
 
-But custom tags can be found as well.
+## Command line tool
 
-It's kind of a generic version of the `rake notes` command (only used
-for Ruby on Rails applications). It will look for tags recursively in
-every given files (or in current directory by default).
+Usage:
 
-Installation
-------------
+    $ notes [options] [file...]
 
-Notes is available on Rubygems.org[http://rubygems.org/gems/notes] and
+With no argument, `notes` will search recursively in the current
+directory. For details, see `notes --help`.
+
+Examples:
+
+    $ notes
+    $ notes foo.h src/
+    $ notes --tag @@@
+    $ notes --no-{todo,fixme,xxx} --tag FOO
+
+### Convention over configuration
+
+Notes won't filter. `find`, `xargs` are here for you:
+
+    $ find . -name '*.rb' | xargs notes
+
+No custom output. It uses a grep-style display, which makes it easy to
+fit your needs. Try:
+
+    $ notes | cut -d: -f3,4-
+
+Or get the list of tagged files in the current directory with:
+
+    $ notes | cut -d: -f1 | sort -u
+
+## Installation
+
+Notes is available on [Rubygems.org](http://rubygems.org/gems/notes) and
 can be installed with:
 
     $ [sudo] gem install notes
 
-Command line tool
------------------
-
-    $ notes [options] [file...]
-
-For details, see the help.
-
-The Notes Library
------------------
+## The Notes library
 
 Module functions:
 
@@ -52,7 +67,7 @@ Extending the Notes module:
     
     file = File.new("foo.c")
     file.extend Notes
-    notes = file.notes { |note| puts note.text }
+    file.notes { |note| puts note.text }
 
 Using the Notes scanner:
 
