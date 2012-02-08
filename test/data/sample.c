@@ -39,7 +39,8 @@ int main()
     /* bind socket to local */
     bind(sock, (struct sockaddr*) &addr, sizeof(struct sockaddr_in));
 
-    //OPTIMIZE make it better  
+    //XXX make it better
+    //XXX really
     while(1)
     {
         //FOO a custom tag

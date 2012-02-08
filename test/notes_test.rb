@@ -5,60 +5,36 @@
 # think this stuff is worth it, you can buy me a beer in return. Vivien Didelot
 # ------------------------------------------------------------------------------
 
-require "minitest"
+require "minitest/autorun"
 require "notes"
-require "tempfile"
 
 class TestNotes < MiniTest::Unit::TestCase
   def setup
-    @sample = File.join __FILE__, "..", "test", "data", "sample.c"
+    @sample = File.join File.dirname(__FILE__), "..", "test", "data", "sample.c"
   end
 
-  def test_new
-    notes = Notes::Scanner.new
-    assert_kind_of Enumerator, notes
-    assert_equal 5, notes.list.size
-    notes.list.each { |a| assert_kind_of AnnotationExtractor::Annotation, a }
-
-    AnnotationExtractor.tags << "FOO"
-    notes = AnnotationExtractor.new(@sample)
-    assert_equal 6, notes.list.size
-
-    # Test exact text
-    assert_equal "first thing to do", notes.list[0].text
-    assert_equal "first fixme thing", notes.list[1].text
-    assert_equal "second todo thing!", notes.list[2].text
-    assert_equal "make it better", notes.list[3].text
-    assert_equal "a custom tag", notes.list[4].text
-    assert_equal "hello world", notes.list[5].text
-
-    AnnotationExtractor.tags = "OPTIMIZE"
-    notes = AnnotationExtractor.new(@sample)
-    assert_equal 1, notes.list.size
-    assert_equal "make it better", notes.list.first.text
-
-    AnnotationExtractor.tags = "FOO"
-    notes = AnnotationExtractor.new(@sample)
-    assert_equal 1, notes.list.size
-    assert_equal "a custom tag", notes.list.first.text
+  def test_module_functions
+    assert_kind_of Enumerator, Notes.scan("blah")
+    assert_kind_of Enumerator, Notes.scan_file(@sample)
+    assert_equal 0, Notes.scan("").count
+    assert_equal 1, Notes.scan("XXX").count
+    assert_equal 6, Notes.scan_file(@sample).count
   end
 
-  def test_get
-    notes = AnnotationExtractor.new(@sample)
-    assert_equal 3, notes.get("TODO").size
-    assert_equal 1, notes.get("FIXME").size
-    assert_equal 1, notes.get("OPTIMIZE").size
+  def test_module_extend
+    file = File.new(@sample)
+    file.extend Notes
+    assert file.respond_to?(:notes)
+    assert_kind_of Enumerator, file.notes
+    assert_equal 6, file.notes.count
   end
 
-  def test_write
-    tempfile = Tempfile.new("notes").path
-
-    AnnotationExtractor.tags = AnnotationExtractor::TAGS
-    notes = AnnotationExtractor.new(@sample)
-    notes.write tempfile
-
-    assert_equal 5, File.readlines(tempfile).size
-
-    File.delete tempfile
+  def test_note
+    Notes.scan_file(@sample) do |note|
+      assert_kind_of Notes::Note, note
+    end
+    note = Notes.scan_file(@sample)
+    assert_equal "//TODO first thing to do\n", note.first.text
+    assert_equal "TODO", note.first.tag
   end
 end
