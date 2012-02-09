@@ -12,14 +12,8 @@ require 'optparse'
 require 'paint'
 require 'find'
 
-def pretty_print(note)
-  colors = {
-    "TODO"  => 'green',
-    "FIXME" => 'yellow',
-    "XXX"   => 'red',
-    :custom => 'cyan'
-  }
-  # grep style format
+# grep-style display
+def pretty_print(note, colors)
   col = Paint[':', :cyan]
   format = Paint['%s', :magenta] + col
   format << Paint['%s', :green] + col
@@ -33,6 +27,13 @@ def pretty_print(note)
 end
 
 tags = Notes::TAGS.dup
+colors = {
+  "TODO"  => 'green',
+  "FIXME" => 'yellow',
+  "XXX"   => 'red',
+  :custom => 'cyan'
+}
+
 usage = 'Usage: notes [OPTION]... [FILE]...'
 
 ARGV.options do |o|
@@ -57,7 +58,7 @@ end
 scanner = Notes::Scanner.new
 scanner.look_for tags
 scanner.on_note do |note|
-  pretty_print(note)
+  pretty_print(note, colors)
 end
 
 paths = ARGV.dup
