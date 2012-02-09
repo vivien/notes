@@ -10,7 +10,7 @@ require "notes"
 
 class TestNotes < MiniTest::Unit::TestCase
   def setup
-    @sample = File.join File.dirname(__FILE__), "..", "test", "data", "sample.c"
+    @sample = File.join File.dirname(__FILE__), "..", "test", "sample.c"
   end
 
   def test_module_functions
