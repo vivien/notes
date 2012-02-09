@@ -16,6 +16,7 @@ module Notes
 
     # TODO doc
     def scan source
+      return if tags.empty?
       source.split("\n").each_with_index do |line, i|
         if line =~ regexp
           @action.call Note.new($1, line, i + 1)
@@ -25,6 +26,7 @@ module Notes
 
     # TODO doc
     def scan_file path
+      return if tags.empty?
       file = File.open(path, 'r')
       file.each_with_index do |line, i|
         if line =~ regexp

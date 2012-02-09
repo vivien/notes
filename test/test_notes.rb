@@ -44,4 +44,9 @@ class TestNotes < MiniTest::Unit::TestCase
     assert !Notes.scan("XTODO").any?
     assert !Notes.scan("XTODOX").any?
   end
+
+  def test_empty
+    assert !Notes.scan("TODO", []).any?
+    assert !Notes.scan_file(@sample, []).any?
+  end
 end
