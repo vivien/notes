@@ -33,10 +33,11 @@ def pretty_print(note)
 end
 
 tags = Notes::TAGS.dup
+usage = 'Usage: notes [OPTION]... [FILE]...'
 
 ARGV.options do |o|
   o.version = Notes::VERSION
-  o.banner = 'Usage: notes [OPTIONS] [FILE]...'
+  o.banner = usage
   o.on(      '--no-todo',  'Do not search TODO tags')  { tags -= ['TODO'] }
   o.on(      '--no-fixme', 'Do not search FIXME tags') { tags -= ['FIXME'] }
   o.on(      '--no-xxx',   'Do not search XXX tags')   { tags -= ['XXX'] }
@@ -47,7 +48,10 @@ end
 begin
   ARGV.options.parse!
 rescue => e
-  STDERR.puts "Oops, #{e.message}"
+  STDERR.puts "notes: #{e.message}"
+  STDERR.puts usage
+  STDERR.puts "Try `notes --help' for more information."
+  exit 1
 end
 
 scanner = Notes::Scanner.new
