@@ -65,7 +65,11 @@ Find.find(*paths) do |path|
   end
   next if File.directory? path
 
-  scanner.scan_file(path)
+  begin
+    scanner.scan_file(path)
+  rescue => e
+    STDERR.puts "notes: #{path}: #{e.message}"
+  end
 end
 
 exit
