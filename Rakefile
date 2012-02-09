@@ -2,7 +2,7 @@ task :default => :test
 
 desc 'Run the test suite on Notes'
 task :test do
-  ruby *%w[-I lib test/notes_test.rb]
+  ruby *%w[-I lib test/test_notes.rb]
 end
 
 desc 'Build the gem'
