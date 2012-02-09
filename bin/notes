@@ -46,27 +46,26 @@ end
 
 begin
   ARGV.options.parse!
-
-  scanner = Notes::Scanner.new
-  scanner.look_for tags
-  scanner.on_note do |note|
-    pretty_print(note)
-  end
-
-  paths = ARGV.dup
-  paths.empty? and paths << Dir.pwd
-
-  Find.find(*paths) do |path|
-    unless paths.include? path
-      Find.prune if File.basename(path).start_with? '.'
-    end
-    next if File.directory? path
-
-    scanner.scan_file(path)
-  end
-
 rescue => e
   STDERR.puts "Oops, #{e.message}"
+end
+
+scanner = Notes::Scanner.new
+scanner.look_for tags
+scanner.on_note do |note|
+  pretty_print(note)
+end
+
+paths = ARGV.dup
+paths.empty? and paths << Dir.pwd
+
+Find.find(*paths) do |path|
+  unless paths.include? path
+    Find.prune if File.basename(path).start_with? '.'
+  end
+  next if File.directory? path
+
+  scanner.scan_file(path)
 end
 
 exit
