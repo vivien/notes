@@ -56,7 +56,7 @@ rescue => e
 end
 
 scanner = Notes::Scanner.new
-scanner.look_for tags
+scanner.tags = tags
 scanner.on_note do |note|
   pretty_print(note, colors)
 end

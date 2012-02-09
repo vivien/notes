@@ -10,9 +10,6 @@ module Notes
     end
 
     # TODO doc
-    alias look_for tags=
-
-    # TODO doc
     def on_note &block
       @action = block
     end
