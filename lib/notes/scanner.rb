@@ -24,9 +24,19 @@ module Notes
     #   scan = Notes::Scanner.new(["TODO", "@@@"]) do |note|
     #     puts "#{note.source} contains notes!"
     #   end
+    #   
+    #   class NotesCounter < Notes::Scanner
+    #     attr_reader :notes
+    #
+    #     def initialize tags = nil
+    #       super(tags)
+    #       @notes = []
+    #       @callback = proc { |note| @notes << note }
+    #     end
+    #   end
     def initialize tags = nil, &block
       @tags = tags || TAGS.dup
-      @callback = block || proc { |note| tag(note) }
+      @callback = block
     end
 
     # Define the callback to execute when a note is given
@@ -67,26 +77,6 @@ module Notes
         end
       end
       file.close
-    end
-
-    # Method to call if and only if no callback is defined
-    #
-    # @example
-    #    class Foo < Notes::Scanner
-    #      attr_reader :notes
-    #
-    #      def initialize tags = nil
-    #        super(tags)
-    #        @notes = []
-    #      end
-    #   
-    #      # Override it
-    #      def tag note
-    #        @notes << note
-    #      end
-    #    end
-    def tag note
-      puts "#{note.type} on line #{note.line}: #{note.text.strip}"
     end
 
     private
