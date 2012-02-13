@@ -10,13 +10,13 @@ module Notes
     #   the tags list
     attr_accessor :tags
 
-    # The callback block executed when a note is found
+    # The block to execute when a note is found
     #
     # @example
-    #   scanner.action = proc { |note| puts note.source }
+    #   scanner.callback = proc { |note| puts note.source }
     #
     # @see :on_note
-    attr_accessor :action
+    attr_accessor :callback
 
     # Create a new scanner
     #
@@ -26,7 +26,7 @@ module Notes
     #   end
     def initialize tags = nil, &block
       @tags = tags || TAGS.dup
-      @action = block || proc { |note| tag(note) }
+      @callback = block || proc { |note| tag(note) }
     end
 
     # Define the callback to execute when a note is given
@@ -36,9 +36,9 @@ module Notes
     #     puts note.text
     #   end
     #
-    # @see :action=
+    # @see :callback=
     def on_note &block
-      @action = block
+      @callback = block
     end
 
     # Scan a source string
@@ -49,7 +49,7 @@ module Notes
       return if tags.empty?
       source.split("\n").each_with_index do |line, i|
         if line =~ regexp
-          @action.call Note.new($1, line, i + 1)
+          @callback.call Note.new($1, line, i + 1)
         end
       end
     end
@@ -63,7 +63,7 @@ module Notes
       file = File.open(path, 'r')
       file.each_with_index do |line, i|
         if line =~ regexp
-          @action.call Note.new($1, line, i + 1, path)
+          @callback.call Note.new($1, line, i + 1, path)
         end
       end
       file.close
