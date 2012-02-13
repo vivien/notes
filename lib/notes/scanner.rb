@@ -1,20 +1,50 @@
 module Notes
   class Scanner
 
-    attr_accessor :tags, :action
+    # The array of tags to look for
+    #
+    # @example
+    #   scanner.tags << "FOO"
+    #
+    # @return [Array]
+    #   the tags list
+    attr_accessor :tags
 
-    # TODO doc
+    # The callback block executed when a note is found
+    #
+    # @example
+    #   scanner.action = proc { |note| puts note.source }
+    #
+    # @see :on_note
+    attr_accessor :action
+
+    # Create a new scanner
+    #
+    # @example
+    #   scan = Notes::Scanner.new(["TODO", "@@@"]) do |note|
+    #     puts "#{note.source} contains notes!"
+    #   end
     def initialize tags = nil, &block
       @tags = tags || TAGS.dup
       @action = block || proc { |note| tag(note) }
     end
 
-    # TODO doc
+    # Define the callback to execute when a note is given
+    #
+    # @example
+    #   scanner.on_note do |note|
+    #     puts note.text
+    #   end
+    #
+    # @see :action=
     def on_note &block
       @action = block
     end
 
-    # TODO doc
+    # Scan a source string
+    #
+    # @example
+    #   scanner.scan("...//XXX urgent fix!")
     def scan source
       return if tags.empty?
       source.split("\n").each_with_index do |line, i|
@@ -24,7 +54,10 @@ module Notes
       end
     end
 
-    # TODO doc
+    # Scan a file
+    #
+    # @example
+    #   scanner.scan_file("foo.c")
     def scan_file path
       return if tags.empty?
       file = File.open(path, 'r')
@@ -36,7 +69,22 @@ module Notes
       file.close
     end
 
-    # TODO doc
+    # Method to call if and only if no callback is defined
+    #
+    # @example
+    #    class Foo < Notes::Scanner
+    #      attr_reader :notes
+    #
+    #      def initialize tags = nil
+    #        super(tags)
+    #        @notes = []
+    #      end
+    #   
+    #      # Override it
+    #      def tag note
+    #        @notes << note
+    #      end
+    #    end
     def tag note
       puts "#{note.type} on line #{note.line}: #{note.text.strip}"
     end

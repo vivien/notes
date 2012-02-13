@@ -1,0 +1,83 @@
+= Notes
+
+Grep tags in source code.
+
+This gem provides a command line tool and a Ruby library to find tags in
+source code. Defaults tags are *TODO*, *FIXME*, and *XXX*.
+Custom tags can be found as well.
+
+It's kind of a generic version of the Ruby on Rails <tt>rake notes</tt> command,
+for any project/source.
+
+== Command line tool
+
+Usage:
+
+    $ notes [options] [file...]
+
+With no argument, <tt>notes</tt> will search recursively in the current
+directory. For details, see <tt>notes --help</tt>.
+
+Examples:
+
+    $ notes
+    $ notes foo.h src/
+    $ notes --tag @@@
+    $ notes --no-{todo,fixme,xxx} --tag FOO
+
+=== Convention over configuration
+
+No custom output.
+
+It uses a grep-style display, which makes it easy to fit your
+needs. <tt>cut</tt> is great:
+
+    $ notes | cut -d: -f3,4-
+
+will display this:
+
+    TODO:    /* add a cool feature */
+
+instead of the normal output:
+
+    foo.c:42:TODO:    /* add a cool feature */
+
+And colors will still be displayed.
+
+Notes won't filter.
+
+<tt>find</tt>, <tt>xargs</tt> are your friends:
+
+    $ find . -name '*.rb' | xargs notes
+
+Or get the list of tagged files in the current directory with:
+
+    $ notes | cut -d: -f1 | sort -u
+
+== Installation
+
+Notes is available on [Rubygems.org](http://rubygems.org/gems/notes) and
+can be installed with:
+
+    $ [sudo] gem install notes
+
+Or you can install from the source directory with:
+
+    $ rake install
+
+== The Notes library
+
+The Notes module provides convenient methods.
+
+    require 'notes'
+    
+    Notes.scan_file("foo.c") do |note|
+      puts "#{note.tag} found at line #{note.line}!"
+    end
+
+Notes can also extend an object to add a new method (see Notes#notes),
+or allow you to create your own scanner (see the Notes::Scanner).
+
+== License
+
+That's free and friendly for sure! See the LICENSE file.

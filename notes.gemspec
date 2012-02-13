@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.summary = 'A Ruby gem to grep tags in source files.'
   spec.require_path = 'lib'
   spec.files = ['lib/notes.rb', 'lib/notes/scanner.rb', 'lib/notes/version.rb']
-  spec.files << 'README.md'
+  spec.files << 'README.rdoc'
   spec.files << 'CHANGELOG.rdoc'
   spec.files << 'LICENSE'
   spec.executables << 'notes'
