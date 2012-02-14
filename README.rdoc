@@ -25,6 +25,15 @@ Examples:
     $ notes --tag @@@
     $ notes --no-{todo,fixme,xxx} --tag FOO
 
+=== Integration with Git
+
+A cool thing to do is to add a Git alias to parse every versionned files:
+
+    $ git config --global alias.n '!git ls-files | xargs notes'
+
+Now, running <tt>git n</tt> in any Git repository will search
+notes in every files under version control!
+
 === Convention over configuration
 
 No custom output.
