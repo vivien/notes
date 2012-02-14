@@ -1,6 +1,6 @@
 = Notes
 
-Grep tags in source code.
+<b>Stupidly grep tags in source code.</b>
 
 This gem provides a command line tool and a Ruby library to find tags in
 source code. Defaults tags are *TODO*, *FIXME*, and *XXX*.

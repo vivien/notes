@@ -5,7 +5,7 @@ Gem::Specification.new do |spec|
   spec.author = 'Vivien Didelot'
   spec.email = 'vivien.didelot@gmail.com'
   spec.version = Notes::VERSION
-  spec.summary = 'A Ruby gem to grep tags in source files.'
+  spec.summary = 'Stupidly grep tags in source code.'
   spec.require_path = 'lib'
   spec.files = ['lib/notes.rb', 'lib/notes/scanner.rb', 'lib/notes/version.rb']
   spec.files << 'README.rdoc'
