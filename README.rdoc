@@ -65,7 +65,7 @@ Or get the list of tagged files in the current directory with:
 
 == Installation
 
-Notes is available on [Rubygems.org](http://rubygems.org/gems/notes) and
+Notes is available on Rubygems.org[http://rubygems.org/gems/notes] and
 can be installed with:
 
     $ [sudo] gem install notes
