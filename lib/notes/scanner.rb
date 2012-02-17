@@ -1,3 +1,4 @@
+# FIXME Notes::Note undefined if we just require notes/scanner
 module Notes
   class Scanner
 
@@ -25,6 +26,7 @@ module Notes
     #     puts "#{note.source} contains notes!"
     #   end
     #   
+    #   # FIXME best place for this example?
     #   class NotesCounter < Notes::Scanner
     #     attr_reader :notes
     #
