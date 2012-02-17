@@ -8,7 +8,7 @@
 require "minitest/autorun"
 require "notes"
 
-# TODO write a better test suite
+# NOTE write a better test suite
 class TestNotes < MiniTest::Unit::TestCase
   def setup
     @sample = File.join File.dirname(__FILE__), "sample.c"
@@ -56,7 +56,7 @@ class TestNotes < MiniTest::Unit::TestCase
     skip
     scanner = Notes::Scanner.new
     scanner.tags = []
-    # TODO return an enum when no callback set?
+    # NOTE return an enum when no callback set?
     assert_kind_of Enumerator, scanner.scan("")
     assert_equal 0, scanner.scan("TODO").count
     scanner.tags = ["TODO"]
