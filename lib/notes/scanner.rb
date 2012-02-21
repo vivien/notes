@@ -54,6 +54,7 @@ module Notes
     end
 
     # Scan a source string
+    # NOTE return an enum if @callback.nil?
     #
     # @example
     #   scanner.scan("...//XXX urgent fix!")
@@ -67,6 +68,7 @@ module Notes
     end
 
     # Scan a file
+    # NOTE return an enum if @callback.nil?
     #
     # @example
     #   scanner.scan_file("foo.c")
