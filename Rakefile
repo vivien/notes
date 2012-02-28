@@ -1,3 +1,4 @@
+# NOTE create a notes/task
 task :default => :test
 
 desc 'Run the test suite on Notes'
