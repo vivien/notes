@@ -57,6 +57,7 @@ end
 paths = ARGV.dup
 paths.empty? and paths << Dir.pwd
 
+# NOTE Find.find raises when paths contains a broken symlink
 Find.find(*paths) do |path|
   unless paths.include? path
     Find.prune if File.basename(path).start_with? '.'
