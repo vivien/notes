@@ -35,7 +35,7 @@ ARGV.options do |o|
   o.on(      '--no-todo',  'Do not search TODO tags')  { tags -= ['TODO'] }
   o.on(      '--no-fixme', 'Do not search FIXME tags') { tags -= ['FIXME'] }
   o.on(      '--no-xxx',   'Do not search XXX tags')   { tags -= ['XXX'] }
-  o.on('-t', '--tag=TAG',  'Search TAG tags')          { |tag| tags |= [tag] }
+  o.on('-a', '--tag=TAG',  'Search TAG tags')          { |tag| tags |= [tag] }
   o.on(      '--no-color', 'Do not colorize ouput')    { Paint.mode = 0 }
 end
 
