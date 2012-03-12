@@ -11,8 +11,8 @@ module Notes
   # * tag: Tag the line is marked with;
   # * text: The line of text containing the tag;
   # * line: The line number;
-  # * source: The filename of the input source.
-  Note = Struct.new(:tag, :text, :line, :source)
+  # * file: The filename of the input source.
+  Note = Struct.new(:tag, :text, :line, :file)
 
   # Scan a source string
   #
@@ -47,7 +47,7 @@ module Notes
   #   end
   #   
   #   Notes.scan_file("bar.hs", ['@@@']) do |note|
-  #     puts "File to fix: #{note.source}!"
+  #     puts "File to fix: #{note.file}!"
   #   end
   #
   # @param [String] filename

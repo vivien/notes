@@ -16,7 +16,7 @@ class TestNotes < MiniTest::Unit::TestCase
 
   def test_note
     note = Notes::Note.new
-    [:tag, :text, :line, :source].each do |method|
+    [:tag, :text, :line, :file].each do |method|
       assert note.respond_to?(method)
     end
     note = Notes.scan_file(@sample).first

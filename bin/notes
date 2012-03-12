@@ -13,7 +13,7 @@ def pretty_print(note, colors)
   format << Paint['%s', colors[note.tag] || colors[:custom], :bold] + col
   format << "%s\n"
   printf(format,
-         note.source,
+         note.file,
          note.line,
          note.tag,
          note.text.rstrip)
