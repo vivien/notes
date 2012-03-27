@@ -5,6 +5,10 @@
 # think this stuff is worth it, you can buy me a beer in return. Vivien Didelot
 # ------------------------------------------------------------------------------
 
+if RUBY_VERSION == "1.8.7"
+  require "rubygems"
+  Enumerator = Enumerable::Enumerator # is there a best way for that?
+end
 require "minitest/autorun"
 require "notes"
 
