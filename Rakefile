@@ -18,5 +18,5 @@ end
 
 desc 'Grep notes (using the development script)'
 task :notes do
-  ruby *%[-I lib/ bin/notes --no-{todo,fixme,xxx} --tag NOTE]
+  ruby *%[-I lib/ bin/notes --no-todo --no-fixme --no-xxx --tag NOTE]
 end
