@@ -6,29 +6,8 @@ require 'optparse'
 require 'paint'
 require 'find'
 
-# grep-style display
-def pretty_print(note, colors)
-  col = Paint[':', :cyan]
-  format = Paint['%s', :magenta] + col
-  format << Paint['%s', :green] + col
-  format << Paint['%s', colors[note.tag] || colors[:custom], :bold] + col
-  format << "%s\n"
-  printf(format,
-         note.file,
-         note.line,
-         note.tag,
-         note.text.rstrip)
-end
-
-tags = Notes::TAGS.dup
-colors = {
-  "TODO"  => 'green',
-  "FIXME" => 'yellow',
-  "XXX"   => 'red',
-  :custom => 'cyan'
-}
-
 usage = 'Usage: notes [OPTION]... [FILE]...'
+tags = Notes::TAGS.dup
 
 ARGV.options do |o|
   o.version = Notes::VERSION
@@ -54,10 +33,21 @@ rescue => e
   exit 1
 end
 
+# grep-style display
+c = Paint[':', :cyan]
+format = Paint['%s', :magenta] + c + Paint['%s', :green] + c + '%s' + c + "%s\n"
+colors = {
+  'TODO'  => 'green',
+  'FIXME' => 'yellow',
+  'XXX'   => 'red',
+  :custom => 'cyan'
+}
+
 scanner = Notes::Scanner.new
 scanner.tags = tags
 scanner.on_note do |note|
-  pretty_print(note, colors)
+  tag = Paint[note.tag, colors[note.tag] || colors[:custom], :bold]
+  printf(format, note.file, note.line, tag, note.text.rstrip)
 end
 
 Find.find(*paths) do |path|
