@@ -60,8 +60,9 @@ module Notes
     #   scanner.scan("...//XXX urgent fix!")
     def scan source
       return if tags.empty?
+      rxp = regexp
       source.split("\n").each_with_index do |line, i|
-        if line =~ regexp
+        if rxp =~ line
           @callback.call Note.new($1, line, i + 1)
         end
       end
@@ -74,9 +75,10 @@ module Notes
     #   scanner.scan_file("foo.c")
     def scan_file path
       return if tags.empty?
+      rxp = regexp
       File.open(path, 'r') do |file|
         file.each_with_index do |line, i|
-          if line =~ regexp
+          if rxp =~ line
             @callback.call Note.new($1, line, i + 1, path)
           end
         end
