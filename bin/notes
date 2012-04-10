@@ -42,6 +42,11 @@ end
 
 begin
   ARGV.options.parse!
+  if ARGV.empty?
+    paths = [Dir.pwd]
+  else
+    paths = ARGV.map { |p| File.exist? p or raise Errno::ENOENT, p ; p }
+  end
 rescue => e
   STDERR.puts "notes: #{e.message}"
   STDERR.puts usage
@@ -55,10 +60,6 @@ scanner.on_note do |note|
   pretty_print(note, colors)
 end
 
-paths = ARGV.dup
-paths.empty? and paths << Dir.pwd
-
-# NOTE Find.find raises when paths contains a broken symlink
 Find.find(*paths) do |path|
   unless paths.include? path
     Find.prune if File.basename(path).start_with? '.'
@@ -67,6 +68,8 @@ Find.find(*paths) do |path|
 
   begin
     scanner.scan_file(path)
+  rescue Errno::ENOENT => e
+    STDERR.puts "notes: #{e.message} (broken symlink?)"
   rescue => e
     STDERR.puts "notes: #{path}: #{e.message}"
   end
