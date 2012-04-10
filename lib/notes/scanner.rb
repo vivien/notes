@@ -74,13 +74,13 @@ module Notes
     #   scanner.scan_file("foo.c")
     def scan_file path
       return if tags.empty?
-      file = File.open(path, 'r')
-      file.each_with_index do |line, i|
-        if line =~ regexp
-          @callback.call Note.new($1, line, i + 1, path)
+      File.open(path, 'r') do |file|
+        file.each_with_index do |line, i|
+          if line =~ regexp
+            @callback.call Note.new($1, line, i + 1, path)
+          end
         end
       end
-      file.close
     end
 
     private
