@@ -57,14 +57,17 @@ class TestNotes < MiniTest::Unit::TestCase
   end
 
   def test_scanner
-    skip
-    scanner = Notes::Scanner.new
+    notes = []
+    scanner = Notes::Scanner.new { |n| notes << n }
     scanner.tags = []
-    # NOTE return an enum when no callback set?
-    assert_kind_of Enumerator, scanner.scan("")
-    assert_equal 0, scanner.scan("TODO").count
+
+    scanner.scan("TODO")
+    assert_equal 0, notes.count
+
     scanner.tags = ["TODO"]
-    assert_equal 1, scanner.scan("TODO").count
+    scanner.scan("TODO")
+    assert_equal 1, notes.count
+
     scanner.on_note do |note|
       assert_kind_of Notes::Note, note
       assert_equal "TODO", note.tag

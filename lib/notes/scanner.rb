@@ -1,4 +1,3 @@
-# NOTE Notes::Note undefined if we just require notes/scanner
 module Notes
   class Scanner
 
@@ -14,7 +13,7 @@ module Notes
     # The block to execute when a note is found
     #
     # @example
-    #   scanner.callback = proc { |note| puts note.source }
+    #   scanner.callback = proc { |note| puts note.file }
     #
     # @see :on_note
     attr_accessor :callback
@@ -23,10 +22,9 @@ module Notes
     #
     # @example
     #   scan = Notes::Scanner.new(["TODO", "@@@"]) do |note|
-    #     puts "#{note.source} contains notes!"
+    #     puts "#{note.file} contains notes!"
     #   end
     #   
-    #   # NOTE best place for this example?
     #   class NotesCounter < Notes::Scanner
     #     attr_reader :notes
     #
@@ -54,32 +52,30 @@ module Notes
     end
 
     # Scan a source string
-    # NOTE return an enum if @callback.nil?
     #
     # @example
     #   scanner.scan("...//XXX urgent fix!")
     def scan source
-      return if tags.empty?
+      return if tags.empty? || callback.nil?
       rxp = regexp
       source.split("\n").each_with_index do |line, i|
         if rxp =~ line
-          @callback.call Note.new($1, line, i + 1)
+          callback.call Note.new($1, line, i + 1)
         end
       end
     end
 
     # Scan a file
-    # NOTE return an enum if @callback.nil?
     #
     # @example
     #   scanner.scan_file("foo.c")
     def scan_file path
-      return if tags.empty?
+      return if tags.empty? || callback.nil?
       rxp = regexp
       File.open(path, 'r') do |file|
         file.each_with_index do |line, i|
           if rxp =~ line
-            @callback.call Note.new($1, line, i + 1, path)
+            callback.call Note.new($1, line, i + 1, path)
           end
         end
       end
