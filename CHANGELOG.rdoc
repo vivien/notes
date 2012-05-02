@@ -1,6 +1,8 @@
 == 0.1.0
 
-
+* improve scanner and executable
+* some compatibility fixes
+* change -t option into -a
 
 == 0.1.0-pre
 
