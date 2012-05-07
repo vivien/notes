@@ -6,6 +6,7 @@ require 'optparse'
 require 'paint'
 require 'find'
 
+verbose = false
 usage = 'Usage: notes [OPTION]... [FILE]...'
 tags = Notes::TAGS.dup
 
@@ -17,6 +18,7 @@ ARGV.options do |o|
   o.on(      '--no-xxx',   'Do not search XXX tags')   { tags -= ['XXX'] }
   o.on('-a', '--tag=TAG',  'Search TAG tags')          { |tag| tags |= [tag] }
   o.on(      '--no-color', 'Do not colorize ouput')    { Paint.mode = 0 }
+  o.on('-v', '--verbose',  'Print more messages')      { verbose = true }
 end
 
 begin
@@ -59,9 +61,9 @@ Find.find(*paths) do |path|
   begin
     scanner.scan_file(path)
   rescue Errno::ENOENT => e
-    STDERR.puts "notes: #{e.message} (broken symlink?)"
+    STDERR.puts "notes: #{e.message} (broken symlink?)" if verbose
   rescue => e
-    STDERR.puts "notes: #{path}: #{e.message}"
+    STDERR.puts "notes: #{path}: #{e.message}" if verbose
   end
 end
 
