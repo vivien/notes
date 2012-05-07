@@ -6,9 +6,12 @@ require 'optparse'
 require 'paint'
 require 'find'
 
+interrupted = false
 verbose = false
 usage = 'Usage: notes [OPTION]... [FILE]...'
 tags = Notes::TAGS.dup
+
+trap("INT") { interrupted = true }
 
 ARGV.options do |o|
   o.version = Notes::VERSION
@@ -65,6 +68,7 @@ Find.find(*paths) do |path|
   rescue => e
     STDERR.puts "notes: #{path}: #{e.message}" if verbose
   end
+  exit if interrupted
 end
 
 exit
