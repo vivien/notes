@@ -1,3 +1,8 @@
+== 0.1.1
+
+* gracefully exit when a INT signal (Ctrl-C) is caught.
+* [GH #4] silent error messages by default, add a verbosity option
+
 == 0.1.0
 
 * improve scanner and executable
