@@ -1,3 +1,7 @@
+== master
+
+* use relative paths when no argument supplied.
+
 == 0.1.1
 
 * gracefully exit when a INT signal (Ctrl-C) is caught.

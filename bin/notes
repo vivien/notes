@@ -27,7 +27,7 @@ end
 begin
   ARGV.options.parse!
   if ARGV.empty?
-    paths = [Dir.pwd]
+    paths = '.'
   else
     paths = ARGV.map { |p| File.exist? p or raise Errno::ENOENT, p ; p }
   end
