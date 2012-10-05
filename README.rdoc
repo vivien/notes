@@ -36,24 +36,18 @@ notes in every files under version control!
 
 === Convention over configuration
 
-No custom output.
+<b>No custom output.</b>
 
 It uses a grep-style display, which makes it easy to fit your
 needs. <tt>cut</tt> is great:
 
     $ notes | cut -d: -f3,4-
 
-will display this:
+will display <tt>TODO:  /* add a cool feature */</tt> instead of the normal
+output <tt>foo.c:42:TODO:  /* add a cool feature */</tt>. Colors will still be
+displayed.
 
-    TODO:    /* add a cool feature */
-
-instead of the normal output:
-
-    foo.c:42:TODO:    /* add a cool feature */
-
-And colors will still be displayed.
-
-Notes won't filter.
+<b>Notes won't filter.</b>
 
 <tt>find</tt>, <tt>xargs</tt> are your friends:
 
