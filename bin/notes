@@ -8,6 +8,7 @@ require 'find'
 
 interrupted = false
 verbose = false
+color = STDOUT.tty?
 usage = 'Usage: notes [OPTION]... [FILE]...'
 tags = Notes::TAGS.dup
 
@@ -16,12 +17,12 @@ trap("INT") { interrupted = true }
 ARGV.options do |o|
   o.version = Notes::VERSION
   o.banner = usage
-  o.on(      '--no-todo',  'Do not search TODO tags')  { tags -= ['TODO'] }
-  o.on(      '--no-fixme', 'Do not search FIXME tags') { tags -= ['FIXME'] }
-  o.on(      '--no-xxx',   'Do not search XXX tags')   { tags -= ['XXX'] }
-  o.on('-a', '--tag=TAG',  'Search TAG tags')          { |tag| tags |= [tag] }
-  o.on(      '--no-color', 'Do not colorize output')   { Paint.mode = 0 }
-  o.on('-v', '--verbose',  'Print more messages')      { verbose = true }
+  o.on(      '--no-todo',    'Do not search TODO tags')  { tags -= ['TODO'] }
+  o.on(      '--no-fixme',   'Do not search FIXME tags') { tags -= ['FIXME'] }
+  o.on(      '--no-xxx',     'Do not search XXX tags')   { tags -= ['XXX'] }
+  o.on('-a', '--tag=TAG',    'Search TAG tags')          { |tag| tags |= [tag] }
+  o.on(      '--[no-]color', 'Do [not] colorize output') { |flag| color = flag }
+  o.on('-v', '--verbose',    'Print more messages')      { verbose = true }
 end
 
 begin
@@ -39,6 +40,7 @@ rescue => e
 end
 
 # grep-style display
+color or Paint.mode = 0
 c = Paint[':', :cyan]
 format = Paint['%s', :magenta] + c + Paint['%s', :green] + c + '%s' + c + "%s\n"
 colors = {

@@ -44,8 +44,7 @@ needs. <tt>cut</tt> is great:
     $ notes | cut -d: -f3,4-
 
 will display <tt>TODO:  /* add a cool feature */</tt> instead of the normal
-output <tt>foo.c:42:TODO:  /* add a cool feature */</tt>. Colors will still be
-displayed.
+output <tt>foo.c:42:TODO:  /* add a cool feature */</tt>.
 
 <b>Notes won't filter.</b>
 
