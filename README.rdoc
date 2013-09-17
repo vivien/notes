@@ -82,8 +82,8 @@ Notes can also extend an object to add a new method (see Notes#notes),
 or allow you to create your own scanner (see the Notes::Scanner).
 
 For usage example of the library, you can have a look at the really basic
-{Notes plugin}[http://github.com/v0n/redmine_notes] for Redmine, at:
-http://github.com/v0n/redmine_notes
+{Notes plugin}[http://github.com/vivien/redmine_notes] for Redmine, at:
+http://github.com/vivien/redmine_notes
 
 == License
 
