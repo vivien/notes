@@ -1,5 +1,6 @@
 = Notes
 {<img src="https://badge.fury.io/rb/notes.png" alt="Gem Version" />}[http://badge.fury.io/rb/notes]
+{<img src="https://travis-ci.org/vivien/notes.png" alt="Build Status" />}[https://travis-ci.org/vivien/notes]
 {<img src="https://gemnasium.com/vivien/notes.png" alt="Dependency Status" />}[https://gemnasium.com/vivien/notes]
 {<img src="https://codeclimate.com/github/vivien/notes.png" alt="Code Climate" />}[https://codeclimate.com/github/vivien/notes]
 
