@@ -7,6 +7,7 @@ require 'paint'
 require 'find'
 
 interrupted = false
+gfm = false
 verbose = false
 color = STDOUT.tty?
 usage = 'Usage: notes [OPTION]... [FILE]...'
@@ -22,6 +23,7 @@ ARGV.options do |o|
   o.on(      '--no-xxx',     'Do not search XXX tags')   { tags -= ['XXX'] }
   o.on('-a', '--tag=TAG',    'Search TAG tags')          { |tag| tags |= [tag] }
   o.on(      '--[no-]color', 'Do [not] colorize output') { |flag| color = flag }
+  o.on('-g', '--gfm',        'Print in GFM format')      { gfm = true }
   o.on('-v', '--verbose',    'Print more messages')      { verbose = true }
 end
 
@@ -50,12 +52,19 @@ colors = {
   :custom => 'cyan'
 }
 
-scanner = Notes::Scanner.new
-scanner.tags = tags
-scanner.on_note do |note|
+greplike_callback = lambda do |note|
   tag = Paint[note.tag, colors[note.tag] || colors[:custom], :bold]
   printf(format, note.file, note.line, tag, note.text.rstrip)
 end
+
+# GFM
+gfm_callback = lambda do |note|
+  puts "  - [ ] #{ note.text.strip }"
+end
+
+scanner = Notes::Scanner.new
+scanner.tags = tags
+scanner.callback = gfm ? gfm_callback : greplike_callback
 
 Find.find(*paths) do |path|
   unless paths.include? path

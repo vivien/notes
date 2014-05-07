@@ -28,6 +28,7 @@ Examples:
     $ notes foo.h src/
     $ notes --tag @@@
     $ notes --no-{todo,fixme,xxx} --tag FOO
+    $ notes --gfm
 
 === Integration with Git
 
@@ -37,6 +38,13 @@ A cool thing to do is to add a Git alias to parse every versionned files:
 
 Now, running <tt>git n</tt> in any Git repository will search
 notes in every files under version control!
+
+=== Integration with Github
+
+Notes supports the Github Flavored Markdown 
+([GFM](https://help.github.com/articles/github-flavored-markdown)) for easy 
+listing in README or any Markdown files to be rendered on Github. See the `-g` 
+option.
 
 === Convention over configuration
 

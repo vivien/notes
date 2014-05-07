@@ -1,5 +1,7 @@
 == master
 
+* add a -g option to print notes in the Github Flavored Markdown format.
+
 == 0.1.2
 
 * use relative paths when no argument supplied.
