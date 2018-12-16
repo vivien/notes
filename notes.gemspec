@@ -7,10 +7,9 @@ Gem::Specification.new do |spec|
   spec.version = Notes::VERSION
   spec.summary = 'Stupidly grep tags in source code.'
   spec.require_path = 'lib'
-  spec.files = ['lib/notes.rb', 'lib/notes/scanner.rb', 'lib/notes/version.rb']
-  spec.files << 'README.rdoc'
-  spec.files << 'CHANGELOG.rdoc'
-  spec.files << 'LICENSE'
+  spec.files         = Dir.chdir(File.expand_path('..', __FILE__)) do
+    `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  end
   spec.executables << 'notes'
   spec.add_dependency 'paint', '>= 2.0.3'
   spec.add_development_dependency 'minitest', '>= 5.11.3'
