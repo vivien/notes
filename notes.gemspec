@@ -12,5 +12,7 @@ Gem::Specification.new do |spec|
   spec.files << 'CHANGELOG.rdoc'
   spec.files << 'LICENSE'
   spec.executables << 'notes'
-  spec.add_dependency 'paint', '>= 0.8.4'
+  spec.add_dependency 'paint', '>= 2.0.3'
+  spec.add_development_dependency 'minitest', '>= 5.11.3'
+  spec.add_development_dependency 'rake', '>= 12.3.2'
 end

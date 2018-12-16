@@ -1,0 +1,23 @@
+PATH
+  remote: .
+  specs:
+    notes (0.1.2)
+      paint (>= 2.0.3)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    minitest (5.11.3)
+    paint (2.0.3)
+    rake (12.3.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  minitest (>= 5.11.3)
+  notes!
+  rake (>= 12.3.2)
+
+BUNDLED WITH
+   1.17.2
